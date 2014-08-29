@@ -51,7 +51,7 @@ def make_tree(datas, feature):
     while len(process) > 0:
         next_item = process.pop(0)
         xtype, dat = tree[next_item]
-        if dat.shape[0] < 20:
+        if dat.shape[0] < 50:
             tree[next_item] = (LEAF, dat)
             continue
 
@@ -88,7 +88,7 @@ points = [(0, 2),
 var = 0.03
 cov = np.array([[var, 0], [0, var]])
 
-# Genrate some synthetic data around the points
+# Generate some synthetic data around the points
 datas = None
 for p in points:
     samples = np.random.multivariate_normal(p, cov, 100)
@@ -99,7 +99,7 @@ for p in points:
 
 # Add a splat across all data points to simulate noise
 mu, sig, _ = estimate_norm(datas)
-splat = np.random.multivariate_normal(mu, sig, 100)
+splat = np.random.multivariate_normal(mu, sig, 500)
 datas = np.concatenate([datas, splat])
 
 # Make up some features we could split on
@@ -123,7 +123,7 @@ for i in range(datas.shape[0]):
     profiles[k] = []
 
 ## Train a number of clustering trees
-NUM_TREES = 50
+NUM_TREES = 200
 for j in range(NUM_TREES):
     print "Training tree %s" % j
     t = make_tree(datas, feature)

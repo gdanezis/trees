@@ -60,7 +60,7 @@ def split(train, feat):
 
 
 def build_tree(train, features, levels=5, numfeatures=100):
-    'Train a decsision tree based on labeled data and features'
+    'Train a decision tree based on labeled data and features'
     if levels == 0:
         C1 = Counter([b for _, b in train])
         Leaf = (None, C1)
@@ -94,11 +94,11 @@ def classify(tree, item):
 ## ----------------------------
 
 
-def build_jungle(train, features, levels=10, numfeatures=100):
+def build_jungle(train, features, levels=20, numfeatures=100):
     DAG = {0: copy.copy(train)}
     Candidate_sets = [0]
     next_ID = 0
-    M = 10
+    M = 20
 
     for level in range(levels):
         result_sets = []
@@ -183,10 +183,12 @@ def classify_jungle(DAG, item):
 ## -------------------------
 
 if __name__ == "__main__":
-    dataEN = file("../data/pg23428.txt").read()
-    dataFR = file("../data/pg5711.txt").read()
+    # dataEN = file("../data/pg23428.txt").read()
+    # dataFR = file("../data/pg5711.txt").read()
+    dataEN = file("../data/pg110.txt").read()
+    dataFR = file("../data/pg42671.txt").read()
 
-    length = 50
+    length = 200
 
     testEN, trainEN = split_data(dataEN, label=0, length=length)
     testFR, trainFR = split_data(dataFR, label=1, length=length)
