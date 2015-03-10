@@ -17,7 +17,8 @@ def split_data(data, length=50):
             all_features[vi] += 1
 
     Sz = len(string_data)
-    new_features = dict([(f,v) for f,v in all_features.iteritems() if 9 < v < Sz - 9  ])
+    MINS = 20
+    new_features = dict([(f,v) for f,v in all_features.iteritems() if MINS < v < Sz - MINS  ])
     #for f, v in new_features.iteritems():
     #    print v, f
 
