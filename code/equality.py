@@ -151,3 +151,4 @@ def test_init():
 if __name__ == "__main__":
     # dataEN = file("../data/pg23428.txt").read()
     # dataFR = file("../data/pg5711.txt").read()
+    pass
