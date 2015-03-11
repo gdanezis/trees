@@ -4,7 +4,7 @@ import numpy as np
 import copy
 import traceback
 
-from malware import Forest
+from malware import Forest, traverse
 
 def split_data(data, length=50):
     'Take a large text and divide it into chunks'
@@ -17,7 +17,8 @@ def split_data(data, length=50):
             all_features[vi] += 1
 
     Sz = len(string_data)
-    MINS = 20
+    print "Samples length = ", Sz
+    MINS = 200
     new_features = dict([(f,v) for f,v in all_features.iteritems() if MINS < v < Sz - MINS  ])
     #for f, v in new_features.iteritems():
     #    print v, f
@@ -108,8 +109,12 @@ class EqRecords():
         return (float((d[1] - d[0])) / S) - 1.0
 
     def get_random_feature(self):
-        i = random.choice(self.items)
-        return random.choice(self.data[i].keys())
+        while True:
+            try:
+                i = random.choice(self.items)
+                return random.choice(self.data[i].keys())
+            except:
+                print "No feature!!"
 
     def split_on_feature(self, feature):
         L = self._filter(feature, False)
@@ -121,9 +126,9 @@ class EqRecords():
         return dNew - dH, L, R
 
 def test_init():
-    dataEN = file("../data/pg110.txt").read()
+    dataEN = file("../data/pg42671.txt").read()
 
-    features, train, test = split_data(dataEN, length=1000)
+    features, train, test = split_data(dataEN, length=200)
     train_data, train_labels = train
 
     items, labs = process_data(features, train_data, train_labels)
@@ -134,19 +139,25 @@ def test_init():
 
     d, _ = rec.label_distribution()
 
-    print d
-    print rec.H()
+    #print d
+    #print rec.H()
 
-    for _ in range(100):
-        f = rec.get_random_feature()
-        dh, L, R = rec.split_on_feature(f)
-        print "%f\t\"%s\"\t%s" % (dh, f, (L.size(), R.size()))
+    #for _ in range(100):
+    #    f = rec.get_random_feature()
+    #    dh, L, R = rec.split_on_feature(f)
+    #    print "%f\t\"%s\"\t%s" % (dh, f, (L.size(), R.size()))
 
-    F = Forest(trees = 14, numfeatures = 100)
+    F = Forest(trees = 14, numfeatures = 100, levels=10)
     # R = Record(training_labels, training_records)
-    F.train(rec, multicore = False)
+    F.train(rec, multicore=False)
 
-    print F.root
+    for t in F.root:
+        print "-" * 30
+        for xxx in traverse(t):
+            terms, (labels, sID) = xxx
+            s = " ".join(["%s\"%s\"" % (["-", "+"][b], term) for term, b in terms])
+            s += " (-%s, +%s)" % (labels[0], labels[1])
+            print s
 
 if __name__ == "__main__":
     # dataEN = file("../data/pg23428.txt").read()
